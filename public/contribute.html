@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>提交素材｜Civic Talk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <a href="index.html" class="logo" style="text-decoration:none;">🗣️ <span>Civic</span>Talk</a>
+      <nav class="header-nav">
+        <a id="back-link" href="index.html">← 返回議題</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <h1 class="page-title">提交素材</h1>
+      <p class="page-subtitle" id="issue-title-hint">載入中…</p>
+
+      <div class="alert alert-info" style="margin-bottom:28px;">
+        <strong>提交原則：</strong> 請直接複製貼上網頁原文，不要改寫或摘要。
+        立場鮮明、甚至可信度有爭議的來源都歡迎提交——多元聲音本身就是議題現況的一部分。
+      </div>
+
+      <div class="card">
+        <div class="form-group">
+          <label>來源名稱 <span class="label-hint">媒體、機構、或帳號名稱</span></label>
+          <input type="text" id="source-name" placeholder="例：聯合報、台電官方、綠色和平台灣">
+        </div>
+
+        <div class="form-group">
+          <label>來源連結 <span class="label-hint">可選填</span></label>
+          <input type="url" id="source-url" placeholder="https://…">
+        </div>
+
+        <div class="form-group">
+          <label>立場傾向 <span class="label-hint">這份素材的立場偏向</span></label>
+          <select id="stance">
+            <option value="unknown">不確定</option>
+            <option value="pro">支持（Pro）</option>
+            <option value="con">反對（Con）</option>
+            <option value="neutral">中立 / 學術研究</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>素材內容 <span class="label-hint">請直接貼上原文，不要改寫</span></label>
+          <textarea id="content" rows="12" placeholder="複製貼上原始文字…
+
+提示：整段複製，包含可能「偏頗」的部分。平台展示各種聲音，不做可信度過濾。"></textarea>
+          <p class="text-sm text-muted mt-4" id="char-count">0 字</p>
+        </div>
+
+        <div class="flex gap-8">
+          <button class="btn btn-primary" onclick="submitMaterial()">✅ 提交素材</button>
+          <button class="btn btn-secondary" onclick="history.back()">取消</button>
+        </div>
+      </div>
+
+      <div class="card mt-24" style="background:#f8f8f6;">
+        <h3 class="font-medium mb-8">🙋 什麼素材最有用？</h3>
+        <p class="text-sm text-muted" style="line-height:1.8;">
+          • <strong>政府文件</strong>：官方說明、政策報告、立法院公報<br>
+          • <strong>NGO 聲明</strong>：環保團體、社運組織、公民社會的立場稿<br>
+          • <strong>新聞報導</strong>：各家媒體的報導（包含立場明顯的媒體）<br>
+          • <strong>社群貼文</strong>：具代表性的臉書發文、論壇討論（注意版權）<br>
+          • <strong>學術研究</strong>：研究結論與摘要<br><br>
+          <em>同一份素材請多人各自貼一次，平台會自動計算一致性。</em>
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <div id="toast"></div>
+
+  <script>
+    const API = '/api';
+    const params = new URLSearchParams(location.search);
+    const issueId = params.get('id');
+    if (!issueId) location.href = 'index.html';
+
+    document.getElementById('back-link').href = `issue.html?id=${issueId}`;
+
+    // Load issue title
+    fetch(`${API}/issues/${issueId}`)
+      .then(r => r.json())
+      .then(data => {
+        document.getElementById('issue-title-hint').textContent = `議題：${data.issue?.title || ''}`;
+        document.title = `提交素材｜${data.issue?.title || ''}`;
+      });
+
+    // Char count
+    document.getElementById('content').addEventListener('input', function() {
+      document.getElementById('char-count').textContent = `${this.value.length} 字`;
+    });
+
+    async function submitMaterial() {
+      const content = document.getElementById('content').value.trim();
+      if (!content) { showToast('請填入素材內容'); return; }
+      if (content.length < 30) { showToast('素材太短了，請貼上更完整的原文'); return; }
+
+      const body = {
+        source_name: document.getElementById('source-name').value.trim(),
+        source_url: document.getElementById('source-url').value.trim(),
+        stance: document.getElementById('stance').value,
+        content
+      };
+
+      const res = await fetch(`${API}/issues/${issueId}/materials`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      if (res.ok) {
+        showToast('✅ 素材提交成功，謝謝貢獻！');
+        setTimeout(() => location.href = `issue.html?id=${issueId}`, 1200);
+      } else {
+        showToast('提交失敗，請再試一次');
+      }
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+  </script>
+</body>
+</html>
