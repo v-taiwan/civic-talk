@@ -160,6 +160,8 @@ civic-talk/
 
 相關社群：g0v Slack `#vTaiwan` 頻道（[join.g0v.tw](https://join.g0v.tw)）
 
+感謝 ronny wang 提供初步實作的概念並授權社群使用。
+
 ---
 
 ## License
