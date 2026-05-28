@@ -1,16 +1,4 @@
 {
   "name": "civic-talk",
-  "version": "1.0.0",
-  "description": "用 AI 降低審議民主成本的公民平台",
-  "private": true,
-  "scripts": {
-    "dev": "wrangler dev",
-    "deploy": "wrangler deploy",
-    "db:create": "wrangler d1 create civic-talk-db",
-    "db:migrate": "wrangler d1 execute civic-talk-db --file=schema.sql",
-    "db:migrate:prod": "wrangler d1 execute civic-talk-db --remote --file=schema.sql"
-  },
-  "devDependencies": {
-    "wrangler": "^3.0.0"
-  }
+  "private": true
 }
