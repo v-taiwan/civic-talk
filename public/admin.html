@@ -143,9 +143,12 @@
           <option value="published">說明頁已發布</option>
         </select>
       </div>
-      <div class="form-group">
-        <label>polis.tw 對話 ID <span style="font-weight:400;color:var(--text-muted);font-size:0.82rem;">（選填，填入後前台會顯示投票嵌入）</span></label>
-        <input type="text" id="edit-polis" placeholder="例如：3hdpvkky7k">
+      <div class="form-group" style="display:flex;align-items:center;gap:10px;padding:12px;background:#f5f5f3;border-radius:6px;border:1px solid var(--border);">
+        <input type="checkbox" id="edit-polis" style="width:18px;height:18px;cursor:pointer;accent-color:var(--accent);">
+        <label for="edit-polis" style="cursor:pointer;margin:0;">
+          啟用 <strong>polis.tw</strong> 意見投票
+          <span style="display:block;font-size:0.8rem;font-weight:400;color:var(--text-muted);">勾選後，前台會自動嵌入本議題的 polis 投票</span>
+        </label>
       </div>
       <div class="flex gap-8 mt-16">
         <button class="btn btn-primary" onclick="saveIssue()">儲存</button>
@@ -166,9 +169,12 @@
         <label>簡介</label>
         <textarea id="new-desc" rows="3" placeholder="議題背景說明…"></textarea>
       </div>
-      <div class="form-group">
-        <label>polis.tw 對話 ID <span style="font-weight:400;color:var(--text-muted);font-size:0.82rem;">（選填，可之後在編輯議題中填入）</span></label>
-        <input type="text" id="new-polis" placeholder="例如：3hdpvkky7k">
+      <div class="form-group" style="display:flex;align-items:center;gap:10px;padding:12px;background:#f5f5f3;border-radius:6px;border:1px solid var(--border);">
+        <input type="checkbox" id="new-polis" style="width:18px;height:18px;cursor:pointer;accent-color:var(--accent);">
+        <label for="new-polis" style="cursor:pointer;margin:0;">
+          啟用 <strong>polis.tw</strong> 意見投票
+          <span style="display:block;font-size:0.8rem;font-weight:400;color:var(--text-muted);">可之後在編輯議題中再開啟</span>
+        </label>
       </div>
       <div class="flex gap-8 mt-16">
         <button class="btn btn-primary" onclick="createIssue()">建立</button>
@@ -296,7 +302,7 @@
     async function createIssue() {
       const title = document.getElementById('new-title').value.trim();
       const description = document.getElementById('new-desc').value.trim();
-      const polis_id = document.getElementById('new-polis').value.trim() || null;
+      const polis_id = document.getElementById('new-polis').checked ? 'enabled' : null;
       if (!title) { showToast('請填寫標題'); return; }
       const res = await fetch(`${API}/issues`, {
         method: 'POST', headers: authHeaders(), body: JSON.stringify({ title, description, polis_id })
@@ -305,7 +311,7 @@
         closeModal('modal-new');
         document.getElementById('new-title').value = '';
         document.getElementById('new-desc').value = '';
-        document.getElementById('new-polis').value = '';
+        document.getElementById('new-polis').checked = false;
         showToast('✅ 議題建立成功');
         loadIssuesTable(); loadStats();
       }
@@ -318,7 +324,7 @@
       document.getElementById('edit-title').value = issue.title;
       document.getElementById('edit-desc').value = issue.description || '';
       document.getElementById('edit-status').value = issue.status;
-      document.getElementById('edit-polis').value = issue.polis_id || '';
+      document.getElementById('edit-polis').checked = !!issue.polis_id;
       document.getElementById('modal-edit').style.display = 'flex';
     }
 
@@ -328,7 +334,7 @@
         title: document.getElementById('edit-title').value.trim(),
         description: document.getElementById('edit-desc').value.trim(),
         status: document.getElementById('edit-status').value,
-        polis_id: document.getElementById('edit-polis').value.trim() || null,
+        polis_id: document.getElementById('edit-polis').checked ? 'enabled' : null,
       };
       const res = await fetch(`${API}/issues/${id}`, { method: 'PUT', headers: authHeaders(), body: JSON.stringify(body) });
       if (res.ok) { closeModal('modal-edit'); showToast('✅ 已儲存'); loadIssuesTable(); }
