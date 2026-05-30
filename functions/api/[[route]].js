@@ -73,8 +73,8 @@ export async function onRequest(context) {
     const body = await request.json();
     if (!body.title) return error('title is required');
     const { meta } = await DB.prepare(
-      'INSERT INTO issues (title, description) VALUES (?, ?)'
-    ).bind(body.title, body.description ?? '').run();
+      'INSERT INTO issues (title, description, polis_id) VALUES (?, ?, ?)'
+    ).bind(body.title, body.description ?? '', body.polis_id ?? null).run();
     return json({ id: meta.last_row_id, title: body.title }, 201);
   }
 
@@ -123,8 +123,8 @@ export async function onRequest(context) {
     if (!checkAdmin(request, env)) return error('Unauthorized', 401);
     const body = await request.json();
     await DB.prepare(
-      'UPDATE issues SET title = ?, description = ?, status = ? WHERE id = ?'
-    ).bind(body.title, body.description ?? '', body.status ?? 'collecting', issueId).run();
+      'UPDATE issues SET title = ?, description = ?, status = ?, polis_id = ? WHERE id = ?'
+    ).bind(body.title, body.description ?? '', body.status ?? 'collecting', body.polis_id ?? null, issueId).run();
     return json({ ok: true });
   }
 
