@@ -143,6 +143,10 @@
           <option value="published">說明頁已發布</option>
         </select>
       </div>
+      <div class="form-group">
+        <label>polis.tw 對話 ID <span style="font-weight:400;color:var(--text-muted);font-size:0.82rem;">（選填，填入後前台會顯示投票嵌入）</span></label>
+        <input type="text" id="edit-polis" placeholder="例如：3hdpvkky7k">
+      </div>
       <div class="flex gap-8 mt-16">
         <button class="btn btn-primary" onclick="saveIssue()">儲存</button>
         <button class="btn btn-secondary" onclick="closeModal('modal-edit')">取消</button>
@@ -161,6 +165,10 @@
       <div class="form-group">
         <label>簡介</label>
         <textarea id="new-desc" rows="3" placeholder="議題背景說明…"></textarea>
+      </div>
+      <div class="form-group">
+        <label>polis.tw 對話 ID <span style="font-weight:400;color:var(--text-muted);font-size:0.82rem;">（選填，可之後在編輯議題中填入）</span></label>
+        <input type="text" id="new-polis" placeholder="例如：3hdpvkky7k">
       </div>
       <div class="flex gap-8 mt-16">
         <button class="btn btn-primary" onclick="createIssue()">建立</button>
@@ -288,11 +296,19 @@
     async function createIssue() {
       const title = document.getElementById('new-title').value.trim();
       const description = document.getElementById('new-desc').value.trim();
+      const polis_id = document.getElementById('new-polis').value.trim() || null;
       if (!title) { showToast('請填寫標題'); return; }
       const res = await fetch(`${API}/issues`, {
-        method: 'POST', headers: authHeaders(), body: JSON.stringify({ title, description })
+        method: 'POST', headers: authHeaders(), body: JSON.stringify({ title, description, polis_id })
       });
-      if (res.ok) { closeModal('modal-new'); showToast('✅ 議題建立成功'); loadIssuesTable(); loadStats(); }
+      if (res.ok) {
+        closeModal('modal-new');
+        document.getElementById('new-title').value = '';
+        document.getElementById('new-desc').value = '';
+        document.getElementById('new-polis').value = '';
+        showToast('✅ 議題建立成功');
+        loadIssuesTable(); loadStats();
+      }
     }
 
     async function openEditIssue(id) {
@@ -302,6 +318,7 @@
       document.getElementById('edit-title').value = issue.title;
       document.getElementById('edit-desc').value = issue.description || '';
       document.getElementById('edit-status').value = issue.status;
+      document.getElementById('edit-polis').value = issue.polis_id || '';
       document.getElementById('modal-edit').style.display = 'flex';
     }
 
@@ -311,6 +328,7 @@
         title: document.getElementById('edit-title').value.trim(),
         description: document.getElementById('edit-desc').value.trim(),
         status: document.getElementById('edit-status').value,
+        polis_id: document.getElementById('edit-polis').value.trim() || null,
       };
       const res = await fetch(`${API}/issues/${id}`, { method: 'PUT', headers: authHeaders(), body: JSON.stringify(body) });
       if (res.ok) { closeModal('modal-edit'); showToast('✅ 已儲存'); loadIssuesTable(); }
