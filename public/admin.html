@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap">
   <link rel="stylesheet" href="style.css">
+  <script src="i18n.js"></script>
   <style>
     .admin-header { background: #1a1a1a; color: white; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; }
     .admin-logo { font-size: 1rem; font-weight: 700; }
@@ -40,23 +41,28 @@
   <div id="login-screen">
     <div class="card login-card">
       <div style="font-size:2rem;margin-bottom:12px;">🔐</div>
-      <h1>管理後台</h1>
-      <p>請輸入管理密碼登入</p>
+      <h1 data-i18n="adm_login_title">管理後台</h1>
+      <p data-i18n="adm_login_desc">請輸入管理密碼登入</p>
       <div class="form-group">
-        <input type="password" id="pwd-input" placeholder="管理密碼" style="text-align:center;">
+        <input type="password" id="pwd-input" data-i18n-placeholder="adm_login_placeholder" placeholder="管理密碼" style="text-align:center;">
       </div>
-      <button class="btn btn-primary" style="width:100%;" onclick="login()">登入</button>
-      <p id="login-err" style="color:#dc2626;margin-top:12px;display:none;">密碼錯誤，請再試一次</p>
+      <button class="btn btn-primary" style="width:100%;" onclick="login()" data-i18n="adm_login_btn">登入</button>
+      <p id="login-err" style="color:#dc2626;margin-top:12px;display:none;" data-i18n="adm_login_err">密碼錯誤，請再試一次</p>
+      <div style="margin-top:16px;">
+        <button id="lang-toggle" class="btn btn-ghost btn-sm" style="font-size:0.82rem;" onclick="setLang(window.LANG === 'zh' ? 'en' : 'zh')">EN</button>
+      </div>
     </div>
   </div>
 
   <!-- Admin UI (hidden until login) -->
   <div id="admin-ui" style="display:none;">
     <div class="admin-header">
-      <div class="admin-logo">🗣️ Civic Talk <span class="admin-badge">管理後台</span></div>
+      <div class="admin-logo">🗣️ Civic Talk <span class="admin-badge" data-i18n="adm_badge">管理後台</span></div>
       <div style="display:flex;gap:12px;align-items:center;">
-        <a href="index.html" style="color:#9ca3af;font-size:0.85rem;">← 回前台</a>
-        <button class="btn btn-ghost btn-sm" style="color:#9ca3af;" onclick="logout()">登出</button>
+        <a href="index.html" style="color:#9ca3af;font-size:0.85rem;" data-i18n="adm_back">← 回前台</a>
+        <a href="about.html" style="color:#9ca3af;font-size:0.85rem;" data-i18n="nav_about">關於</a>
+        <button id="lang-toggle-admin" class="btn btn-ghost btn-sm" style="color:#9ca3af;font-size:0.82rem;" onclick="setLang(window.LANG === 'zh' ? 'en' : 'zh')">EN</button>
+        <button class="btn btn-ghost btn-sm" style="color:#9ca3af;" onclick="logout()" data-i18n="adm_logout">登出</button>
       </div>
     </div>
 
@@ -64,59 +70,64 @@
 
       <!-- Stats -->
       <div class="stat-grid" id="stats-grid">
-        <div class="stat-card"><div class="stat-num">…</div><div class="stat-label">議題</div></div>
-        <div class="stat-card"><div class="stat-num">…</div><div class="stat-label">素材</div></div>
-        <div class="stat-card"><div class="stat-num">…</div><div class="stat-label">民眾意見</div></div>
-        <div class="stat-card"><div class="stat-num">…</div><div class="stat-label">說明頁版本</div></div>
+        <div class="stat-card"><div class="stat-num">…</div><div class="stat-label" data-i18n="adm_stat_issues">議題</div></div>
+        <div class="stat-card"><div class="stat-num">…</div><div class="stat-label" data-i18n="adm_stat_materials">素材</div></div>
+        <div class="stat-card"><div class="stat-num">…</div><div class="stat-label" data-i18n="adm_stat_opinions">民眾意見</div></div>
+        <div class="stat-card"><div class="stat-num">…</div><div class="stat-label" data-i18n="adm_stat_briefings">說明頁版本</div></div>
       </div>
 
       <!-- Tabs -->
       <div class="tabs">
-        <button class="tab active" onclick="switchTab('issues')">📋 議題管理</button>
-        <button class="tab" onclick="switchTab('materials')">📚 素材管理</button>
-        <button class="tab" onclick="switchTab('opinions')">💬 意見管理</button>
+        <button class="tab active" onclick="switchTab('issues')" data-i18n="adm_tab_issues">📋 議題管理</button>
+        <button class="tab" onclick="switchTab('materials')" data-i18n="adm_tab_materials">📚 素材管理</button>
+        <button class="tab" onclick="switchTab('opinions')" data-i18n="adm_tab_opinions">💬 意見管理</button>
       </div>
 
       <!-- Tab: Issues -->
       <div id="tab-issues" class="tab-panel active">
         <div class="flex justify-between items-center mb-16">
-          <h2 class="font-bold">所有議題</h2>
-          <button class="btn btn-primary btn-sm" onclick="openNewIssue()">＋ 新增議題</button>
+          <h2 class="font-bold" data-i18n="adm_issues_title">所有議題</h2>
+          <button class="btn btn-primary btn-sm" onclick="openNewIssue()" data-i18n="adm_new_issue_btn">＋ 新增議題</button>
         </div>
         <div style="overflow-x:auto;">
           <table class="admin-table" id="issues-table">
             <thead>
               <tr>
-                <th>ID</th><th>標題</th><th>狀態</th><th>素材數</th><th>建立時間</th><th>操作</th>
+                <th data-i18n="adm_th_id">ID</th>
+                <th data-i18n="adm_th_title">標題</th>
+                <th data-i18n="adm_th_status">狀態</th>
+                <th data-i18n="adm_th_materials">素材數</th>
+                <th data-i18n="adm_th_created">建立時間</th>
+                <th data-i18n="adm_th_actions">操作</th>
               </tr>
             </thead>
-            <tbody id="issues-tbody"><tr><td colspan="6" style="text-align:center;color:#9ca3af;padding:32px;">載入中…</td></tr></tbody>
+            <tbody id="issues-tbody"><tr><td colspan="6" style="text-align:center;color:#9ca3af;padding:32px;" data-i18n="loading">載入中…</td></tr></tbody>
           </table>
         </div>
       </div>
 
       <!-- Tab: Materials -->
       <div id="tab-materials" class="tab-panel">
-        <h2 class="font-bold mb-16">素材管理</h2>
+        <h2 class="font-bold mb-16" data-i18n="adm_mat_section_title">素材管理</h2>
         <div class="form-group" style="max-width:360px;">
-          <label>選擇議題</label>
+          <label data-i18n="adm_select_issue_label">選擇議題</label>
           <select id="mat-issue-select" onchange="loadMaterials()">
-            <option value="">請選擇議題…</option>
+            <option value="" data-i18n="adm_select_placeholder">請選擇議題…</option>
           </select>
         </div>
-        <div id="materials-content"><div class="empty"><div class="empty-icon">👆</div>請先選擇議題</div></div>
+        <div id="materials-content"><div class="empty"><div class="empty-icon">👆</div><span data-i18n="adm_empty_select">請先選擇議題</span></div></div>
       </div>
 
       <!-- Tab: Opinions -->
       <div id="tab-opinions" class="tab-panel">
-        <h2 class="font-bold mb-16">意見管理</h2>
+        <h2 class="font-bold mb-16" data-i18n="adm_op_section_title">意見管理</h2>
         <div class="form-group" style="max-width:360px;">
-          <label>選擇議題</label>
+          <label data-i18n="adm_select_issue_label">選擇議題</label>
           <select id="op-issue-select" onchange="loadOpinions()">
-            <option value="">請選擇議題…</option>
+            <option value="" data-i18n="adm_select_placeholder">請選擇議題…</option>
           </select>
         </div>
-        <div id="opinions-content"><div class="empty"><div class="empty-icon">👆</div>請先選擇議題</div></div>
+        <div id="opinions-content"><div class="empty"><div class="empty-icon">👆</div><span data-i18n="adm_empty_select">請先選擇議題</span></div></div>
       </div>
 
     </main>
@@ -125,34 +136,34 @@
   <!-- Edit Issue Modal -->
   <div id="modal-edit" class="modal-overlay" style="display:none;">
     <div class="modal">
-      <h2>編輯議題</h2>
+      <h2 data-i18n="adm_modal_edit_title">編輯議題</h2>
       <input type="hidden" id="edit-id">
       <div class="form-group">
-        <label>標題</label>
+        <label data-i18n="adm_label_title">標題</label>
         <input type="text" id="edit-title">
       </div>
       <div class="form-group">
-        <label>簡介</label>
+        <label data-i18n="adm_label_desc">簡介</label>
         <textarea id="edit-desc" rows="3"></textarea>
       </div>
       <div class="form-group">
-        <label>狀態</label>
+        <label data-i18n="adm_label_status">狀態</label>
         <select id="edit-status">
-          <option value="collecting">素材收集中</option>
-          <option value="summarizing">彙整中</option>
-          <option value="published">說明頁已發布</option>
+          <option value="collecting" data-i18n="status_collecting">素材收集中</option>
+          <option value="summarizing" data-i18n="status_summarizing">彙整中</option>
+          <option value="published" data-i18n="status_published">說明頁已發布</option>
         </select>
       </div>
       <div class="form-group" style="display:flex;align-items:center;gap:10px;padding:12px;background:#f5f5f3;border-radius:6px;border:1px solid var(--border);">
         <input type="checkbox" id="edit-polis" style="width:18px;height:18px;cursor:pointer;accent-color:var(--accent);">
         <label for="edit-polis" style="cursor:pointer;margin:0;">
-          啟用 <strong>polis.tw</strong> 意見投票
-          <span style="display:block;font-size:0.8rem;font-weight:400;color:var(--text-muted);">勾選後，前台會自動嵌入本議題的 polis 投票</span>
+          <strong data-i18n="adm_polis_label">啟用 polis.tw 意見投票</strong>
+          <span style="display:block;font-size:0.8rem;font-weight:400;color:var(--text-muted);" data-i18n="adm_polis_hint">勾選後，前台會自動嵌入本議題的 polis 投票</span>
         </label>
       </div>
       <div class="flex gap-8 mt-16">
-        <button class="btn btn-primary" onclick="saveIssue()">儲存</button>
-        <button class="btn btn-secondary" onclick="closeModal('modal-edit')">取消</button>
+        <button class="btn btn-primary" onclick="saveIssue()" data-i18n="adm_btn_save">儲存</button>
+        <button class="btn btn-secondary" onclick="closeModal('modal-edit')" data-i18n="adm_btn_cancel">取消</button>
       </div>
     </div>
   </div>
@@ -160,25 +171,25 @@
   <!-- New Issue Modal -->
   <div id="modal-new" class="modal-overlay" style="display:none;">
     <div class="modal">
-      <h2>新增議題</h2>
+      <h2 data-i18n="adm_modal_new_title">新增議題</h2>
       <div class="form-group">
-        <label>標題</label>
-        <input type="text" id="new-title" placeholder="議題標題">
+        <label data-i18n="adm_label_title">標題</label>
+        <input type="text" id="new-title" data-i18n-placeholder="adm_new_ph_title" placeholder="議題標題">
       </div>
       <div class="form-group">
-        <label>簡介</label>
-        <textarea id="new-desc" rows="3" placeholder="議題背景說明…"></textarea>
+        <label data-i18n="adm_label_desc">簡介</label>
+        <textarea id="new-desc" rows="3" data-i18n-placeholder="adm_new_ph_desc" placeholder="議題背景說明…"></textarea>
       </div>
       <div class="form-group" style="display:flex;align-items:center;gap:10px;padding:12px;background:#f5f5f3;border-radius:6px;border:1px solid var(--border);">
         <input type="checkbox" id="new-polis" style="width:18px;height:18px;cursor:pointer;accent-color:var(--accent);">
         <label for="new-polis" style="cursor:pointer;margin:0;">
-          啟用 <strong>polis.tw</strong> 意見投票
-          <span style="display:block;font-size:0.8rem;font-weight:400;color:var(--text-muted);">可之後在編輯議題中再開啟</span>
+          <strong data-i18n="adm_polis_label">啟用 polis.tw 意見投票</strong>
+          <span style="display:block;font-size:0.8rem;font-weight:400;color:var(--text-muted);" data-i18n="adm_polis_hint_new">可之後在編輯議題中再開啟</span>
         </label>
       </div>
       <div class="flex gap-8 mt-16">
-        <button class="btn btn-primary" onclick="createIssue()">建立</button>
-        <button class="btn btn-secondary" onclick="closeModal('modal-new')">取消</button>
+        <button class="btn btn-primary" onclick="createIssue()" data-i18n="adm_btn_create">建立</button>
+        <button class="btn btn-secondary" onclick="closeModal('modal-new')" data-i18n="adm_btn_cancel">取消</button>
       </div>
     </div>
   </div>
@@ -186,15 +197,15 @@
   <!-- Edit Briefing Modal -->
   <div id="modal-briefing" class="modal-overlay" style="display:none;">
     <div class="modal">
-      <h2>編輯說明頁</h2>
+      <h2 data-i18n="adm_modal_briefing_title">編輯說明頁</h2>
       <input type="hidden" id="briefing-issue-id">
-      <div class="form-group"><label>共識</label><textarea id="b-consensus" rows="3"></textarea></div>
-      <div class="form-group"><label>爭點</label><textarea id="b-disputes" rows="3"></textarea></div>
-      <div class="form-group"><label>立場地圖</label><textarea id="b-positions" rows="4"></textarea></div>
-      <div class="form-group"><label>一頁式說明</label><textarea id="b-narrative" rows="6"></textarea></div>
+      <div class="form-group"><label data-i18n="adm_label_consensus">共識</label><textarea id="b-consensus" rows="3"></textarea></div>
+      <div class="form-group"><label data-i18n="adm_label_disputes">爭點</label><textarea id="b-disputes" rows="3"></textarea></div>
+      <div class="form-group"><label data-i18n="adm_label_positions">立場地圖</label><textarea id="b-positions" rows="4"></textarea></div>
+      <div class="form-group"><label data-i18n="adm_label_narrative">一頁式說明</label><textarea id="b-narrative" rows="6"></textarea></div>
       <div class="flex gap-8 mt-16">
-        <button class="btn btn-primary" onclick="saveBriefing()">儲存</button>
-        <button class="btn btn-secondary" onclick="closeModal('modal-briefing')">取消</button>
+        <button class="btn btn-primary" onclick="saveBriefing()" data-i18n="adm_btn_save">儲存</button>
+        <button class="btn btn-secondary" onclick="closeModal('modal-briefing')" data-i18n="adm_btn_cancel">取消</button>
       </div>
     </div>
   </div>
@@ -206,7 +217,7 @@
     let adminToken = '';
     let allIssues = [];
 
-    // ── Auth ────────────────────────────────────────────────
+    // ── Auth ─────────────────────────────────────────────────
     async function login() {
       const pwd = document.getElementById('pwd-input').value;
       const res = await fetch(`${API}/admin/login`, {
@@ -233,11 +244,13 @@
       return { 'Content-Type': 'application/json', 'X-Admin-Token': adminToken };
     }
 
-    // ── Init ────────────────────────────────────────────────
     window.addEventListener('load', () => {
       const saved = sessionStorage.getItem('civic_admin_token');
       if (saved) { adminToken = saved; showAdmin(); }
       document.getElementById('pwd-input').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+      // Sync second lang toggle button
+      const adminBtn = document.getElementById('lang-toggle-admin');
+      if (adminBtn) adminBtn.textContent = window.LANG === 'zh' ? 'EN' : '中文';
     });
 
     async function showAdmin() {
@@ -246,37 +259,43 @@
       await Promise.all([loadStats(), loadIssuesTable()]);
     }
 
-    // ── Stats ───────────────────────────────────────────────
+    // ── Stats ─────────────────────────────────────────────────
     async function loadStats() {
       const res = await fetch(`${API}/admin/stats`, { headers: authHeaders() });
       const data = await res.json();
       const grid = document.getElementById('stats-grid');
       grid.innerHTML = `
-        <div class="stat-card"><div class="stat-num">${data.issues}</div><div class="stat-label">議題</div></div>
-        <div class="stat-card"><div class="stat-num">${data.materials}</div><div class="stat-label">素材</div></div>
-        <div class="stat-card"><div class="stat-num">${data.opinions}</div><div class="stat-label">民眾意見</div></div>
-        <div class="stat-card"><div class="stat-num">${data.briefings}</div><div class="stat-label">說明頁版本</div></div>
+        <div class="stat-card"><div class="stat-num">${data.issues}</div><div class="stat-label">${t('adm_stat_issues')}</div></div>
+        <div class="stat-card"><div class="stat-num">${data.materials}</div><div class="stat-label">${t('adm_stat_materials')}</div></div>
+        <div class="stat-card"><div class="stat-num">${data.opinions}</div><div class="stat-label">${t('adm_stat_opinions')}</div></div>
+        <div class="stat-card"><div class="stat-num">${data.briefings}</div><div class="stat-label">${t('adm_stat_briefings')}</div></div>
       `;
     }
 
-    // ── Issues ──────────────────────────────────────────────
+    // ── Issues ───────────────────────────────────────────────
     async function loadIssuesTable() {
       const res = await fetch(`${API}/issues`);
       allIssues = await res.json();
+      renderIssuesTable();
+    }
 
-      // populate selects
+    function renderIssuesTable() {
       ['mat-issue-select','op-issue-select'].forEach(id => {
         const sel = document.getElementById(id);
         const cur = sel.value;
-        sel.innerHTML = '<option value="">請選擇議題…</option>' +
+        sel.innerHTML = `<option value="">${t('adm_select_placeholder')}</option>` +
           allIssues.map(i => `<option value="${i.id}">${esc(i.title)}</option>`).join('');
         if (cur) sel.value = cur;
       });
 
-      const statusMap = { collecting: '素材收集中', summarizing: '彙整中', published: '已發布' };
+      const statusMap = {
+        collecting: t('status_collecting'),
+        summarizing: t('status_summarizing'),
+        published: t('status_published_short')
+      };
       const tbody = document.getElementById('issues-tbody');
       if (!allIssues.length) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#9ca3af;padding:32px;">尚無議題</td></tr>';
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#9ca3af;padding:32px;">${t('adm_empty_materials')}</td></tr>`;
         return;
       }
       tbody.innerHTML = allIssues.map(i => `
@@ -288,9 +307,9 @@
           <td style="color:#9ca3af;font-size:0.8rem;">${formatDate(i.created_at)}</td>
           <td>
             <div class="issue-row-actions">
-              <button class="btn btn-edit btn-sm" onclick="openEditIssue(${i.id})">編輯</button>
-              <button class="btn btn-edit btn-sm" onclick="openBriefing(${i.id})">說明頁</button>
-              <button class="btn btn-danger btn-sm" onclick="deleteIssue(${i.id}, '${esc(i.title)}')">刪除</button>
+              <button class="btn btn-edit btn-sm" onclick="openEditIssue(${i.id})">${t('adm_btn_edit')}</button>
+              <button class="btn btn-edit btn-sm" onclick="openBriefing(${i.id})">${t('adm_btn_briefing')}</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteIssue(${i.id}, '${esc(i.title)}')">${t('adm_btn_delete')}</button>
             </div>
           </td>
         </tr>
@@ -303,7 +322,7 @@
       const title = document.getElementById('new-title').value.trim();
       const description = document.getElementById('new-desc').value.trim();
       const polis_id = document.getElementById('new-polis').checked ? 'enabled' : null;
-      if (!title) { showToast('請填寫標題'); return; }
+      if (!title) { showToast(t('adm_toast_title_required')); return; }
       const res = await fetch(`${API}/issues`, {
         method: 'POST', headers: authHeaders(), body: JSON.stringify({ title, description, polis_id })
       });
@@ -312,7 +331,7 @@
         document.getElementById('new-title').value = '';
         document.getElementById('new-desc').value = '';
         document.getElementById('new-polis').checked = false;
-        showToast('✅ 議題建立成功');
+        showToast(t('adm_toast_create'));
         loadIssuesTable(); loadStats();
       }
     }
@@ -337,16 +356,16 @@
         polis_id: document.getElementById('edit-polis').checked ? 'enabled' : null,
       };
       const res = await fetch(`${API}/issues/${id}`, { method: 'PUT', headers: authHeaders(), body: JSON.stringify(body) });
-      if (res.ok) { closeModal('modal-edit'); showToast('✅ 已儲存'); loadIssuesTable(); }
+      if (res.ok) { closeModal('modal-edit'); showToast(t('adm_toast_save')); loadIssuesTable(); }
     }
 
     async function deleteIssue(id, title) {
-      if (!confirm(`確定要刪除「${title}」及其所有素材、意見、說明頁嗎？此操作無法復原。`)) return;
+      if (!confirm(t('adm_confirm_delete').replace('{title}', title))) return;
       const res = await fetch(`${API}/issues/${id}`, { method: 'DELETE', headers: authHeaders() });
-      if (res.ok) { showToast('✅ 已刪除'); loadIssuesTable(); loadStats(); }
+      if (res.ok) { showToast(t('adm_toast_delete')); loadIssuesTable(); loadStats(); }
     }
 
-    // ── Briefing ────────────────────────────────────────────
+    // ── Briefing ──────────────────────────────────────────────
     async function openBriefing(issueId) {
       const res = await fetch(`${API}/issues/${issueId}/briefing`);
       const b = await res.json();
@@ -367,56 +386,57 @@
         positions: document.getElementById('b-positions').value,
         narrative: document.getElementById('b-narrative').value,
       };
-      // If briefing exists, update; otherwise create
       const method = existing ? 'PUT' : 'POST';
-      const url = existing ? `${API}/issues/${id}/briefing` : `${API}/issues/${id}/briefing`;
-      const res = await fetch(url, { method, headers: authHeaders(), body: JSON.stringify(body) });
-      if (res.ok) { closeModal('modal-briefing'); showToast('✅ 說明頁已儲存'); }
+      const res = await fetch(`${API}/issues/${id}/briefing`, { method, headers: authHeaders(), body: JSON.stringify(body) });
+      if (res.ok) { closeModal('modal-briefing'); showToast(t('adm_toast_briefing_save')); }
     }
 
-    // ── Materials ───────────────────────────────────────────
+    // ── Materials ─────────────────────────────────────────────
     async function loadMaterials() {
       const issueId = document.getElementById('mat-issue-select').value;
       if (!issueId) return;
       const res = await fetch(`${API}/issues/${issueId}/materials`);
       const mats = await res.json();
       const el = document.getElementById('materials-content');
-      if (!mats.length) { el.innerHTML = '<div class="empty"><div class="empty-icon">📭</div>尚無素材</div>'; return; }
-      const stanceLabel = { pro:'支持', con:'反對', neutral:'中立', unknown:'不明' };
-      el.innerHTML = `<p class="text-sm text-muted mb-16">共 ${mats.length} 份素材</p>` + mats.map(m => `
+      if (!mats.length) { el.innerHTML = `<div class="empty"><div class="empty-icon">📭</div>${t('adm_empty_materials')}</div>`; return; }
+      const stanceLabel = {
+        pro: t('stance_pro'), con: t('stance_con'),
+        neutral: t('stance_neutral'), unknown: t('stance_unknown')
+      };
+      el.innerHTML = `<p class="text-sm text-muted mb-16">${t('adm_mat_count_prefix')}${mats.length}${t('adm_mat_count_suffix')}</p>` + mats.map(m => `
         <div class="card" style="margin-bottom:12px;">
           <div class="flex justify-between items-center mb-8">
-            <span class="font-medium">${esc(m.source_name || '未知來源')}</span>
+            <span class="font-medium">${esc(m.source_name || t('adm_mat_source_unknown'))}</span>
             <div class="flex gap-8 items-center">
               <span class="text-sm text-muted">${stanceLabel[m.stance]||m.stance}</span>
-              <button class="btn btn-danger btn-sm" onclick="deleteMaterial(${m.id})">刪除</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteMaterial(${m.id})">${t('adm_btn_delete')}</button>
             </div>
           </div>
           <div style="font-size:0.85rem;color:#6b6b6b;white-space:pre-wrap;max-height:120px;overflow:hidden;">${esc(m.content.slice(0,300))}${m.content.length>300?'…':''}</div>
-          ${m.source_url ? `<a href="${esc(m.source_url)}" target="_blank" class="text-sm" style="margin-top:6px;display:block;">🔗 原始連結</a>` : ''}
+          ${m.source_url ? `<a href="${esc(m.source_url)}" target="_blank" class="text-sm" style="margin-top:6px;display:block;">${t('adm_mat_link')}</a>` : ''}
         </div>
       `).join('');
     }
 
     async function deleteMaterial(id) {
-      if (!confirm('確定要刪除這份素材嗎？')) return;
+      if (!confirm(t('adm_confirm_mat'))) return;
       const res = await fetch(`${API}/materials/${id}`, { method: 'DELETE', headers: authHeaders() });
-      if (res.ok) { showToast('✅ 已刪除'); loadMaterials(); loadStats(); }
+      if (res.ok) { showToast(t('adm_toast_delete')); loadMaterials(); loadStats(); }
     }
 
-    // ── Opinions ────────────────────────────────────────────
+    // ── Opinions ──────────────────────────────────────────────
     async function loadOpinions() {
       const issueId = document.getElementById('op-issue-select').value;
       if (!issueId) return;
       const res = await fetch(`${API}/issues/${issueId}/opinions`);
       const ops = await res.json();
       const el = document.getElementById('opinions-content');
-      if (!ops.length) { el.innerHTML = '<div class="empty"><div class="empty-icon">💬</div>尚無意見</div>'; return; }
-      el.innerHTML = `<p class="text-sm text-muted mb-16">共 ${ops.length} 份意見</p>` + ops.map(o => `
+      if (!ops.length) { el.innerHTML = `<div class="empty"><div class="empty-icon">💬</div>${t('adm_empty_opinions')}</div>`; return; }
+      el.innerHTML = `<p class="text-sm text-muted mb-16">${t('adm_op_count_prefix')}${ops.length}${t('adm_op_count_suffix')}</p>` + ops.map(o => `
         <div class="card opinion-card mb-16">
           <div class="flex justify-between items-center mb-8">
             <span class="opinion-meta">${formatDate(o.created_at)}</span>
-            <button class="btn btn-danger btn-sm" onclick="deleteOpinion(${o.id})">刪除</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteOpinion(${o.id})">${t('adm_btn_delete')}</button>
           </div>
           <div style="font-size:0.9rem;white-space:pre-wrap;">${esc(o.summary)}</div>
         </div>
@@ -424,30 +444,38 @@
     }
 
     async function deleteOpinion(id) {
-      if (!confirm('確定要刪除這份意見嗎？')) return;
+      if (!confirm(t('adm_confirm_op'))) return;
       const res = await fetch(`${API}/opinions/${id}`, { method: 'DELETE', headers: authHeaders() });
-      if (res.ok) { showToast('✅ 已刪除'); loadOpinions(); loadStats(); }
+      if (res.ok) { showToast(t('adm_toast_delete')); loadOpinions(); loadStats(); }
     }
 
-    // ── Tabs ────────────────────────────────────────────────
+    // ── Tabs ──────────────────────────────────────────────────
     function switchTab(name) {
       const names = ['issues','materials','opinions'];
-      document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', names[i]===name));
+      document.querySelectorAll('.tab').forEach((tab, i) => tab.classList.toggle('active', names[i] === name));
       document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
       document.getElementById(`tab-${name}`).classList.add('active');
     }
 
-    // ── Util ────────────────────────────────────────────────
+    // 語言切換後重新渲染動態內容
+    window.rerender = function() {
+      renderIssuesTable();
+      loadStats();
+      // Sync second lang toggle
+      const adminBtn = document.getElementById('lang-toggle-admin');
+      if (adminBtn) adminBtn.textContent = window.LANG === 'zh' ? 'EN' : '中文';
+    };
+
+    // ── Util ──────────────────────────────────────────────────
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
     function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-    function formatDate(d) { return d ? new Date(d).toLocaleDateString('zh-TW') : ''; }
+    function formatDate(d) { return d ? new Date(d).toLocaleDateString(window.LANG === 'zh' ? 'zh-TW' : 'en-US') : ''; }
     function showToast(msg) {
-      const t = document.getElementById('toast');
-      t.textContent = msg; t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 2500);
+      const el = document.getElementById('toast');
+      el.textContent = msg; el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 2500);
     }
 
-    // Close modal on overlay click
     document.querySelectorAll('.modal-overlay').forEach(el => {
       el.addEventListener('click', e => { if (e.target === el) el.style.display = 'none'; });
     });
