@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>關於 Civic Talk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@400;700;900&display=swap">
+  <link rel="stylesheet" href="style.css">
+  <script src="i18n.js"></script>
+  <style>
+    /* ── Hero ─────────────────────────────────────────── */
+    .about-hero {
+      background: linear-gradient(135deg, #1a3a5c 0%, #0f2a45 100%);
+      color: white;
+      padding: 80px 20px 72px;
+      text-align: center;
+    }
+    .about-hero .hero-tag {
+      display: inline-block;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 20px;
+      padding: 4px 16px;
+      font-size: 0.82rem;
+      margin-bottom: 24px;
+      letter-spacing: 0.03em;
+    }
+    .about-hero h1 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 700;
+      line-height: 1.4;
+      margin-bottom: 20px;
+      white-space: pre-line;
+    }
+    .about-hero p {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: rgba(255,255,255,0.82);
+      max-width: 640px;
+      margin: 0 auto 32px;
+    }
+    .about-hero .hero-cta {
+      display: inline-flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .btn-white {
+      background: white;
+      color: #1a3a5c;
+      border: none;
+      font-weight: 600;
+    }
+    .btn-white:hover { background: #f0f4f8; }
+    .btn-outline-white {
+      background: transparent;
+      color: white;
+      border: 1px solid rgba(255,255,255,0.5);
+    }
+    .btn-outline-white:hover { background: rgba(255,255,255,0.1); }
+
+    /* ── Sections ─────────────────────────────────────── */
+    .about-section {
+      padding: 64px 20px;
+    }
+    .about-section:nth-child(even) {
+      background: #f8f8f6;
+    }
+    .section-inner {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .section-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .section-desc {
+      color: var(--text-muted);
+      line-height: 1.8;
+      margin-bottom: 40px;
+    }
+
+    /* ── Flow ──────────────────────────────────────────── */
+    .flow {
+      display: flex;
+      gap: 0;
+      position: relative;
+      margin-top: 8px;
+    }
+    .flow-step {
+      flex: 1;
+      position: relative;
+    }
+    .flow-step:not(:last-child)::after {
+      content: '→';
+      position: absolute;
+      right: -14px;
+      top: 28px;
+      font-size: 1.4rem;
+      color: var(--accent);
+      z-index: 1;
+    }
+    .flow-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px 20px;
+      margin: 0 8px;
+      height: 100%;
+    }
+    .flow-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .flow-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .flow-desc {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+    .flow-icon {
+      font-size: 1.8rem;
+      margin-bottom: 12px;
+    }
+    @media (max-width: 640px) {
+      .flow { flex-direction: column; gap: 16px; }
+      .flow-step:not(:last-child)::after { content: '↓'; right: auto; left: 50%; top: auto; bottom: -20px; transform: translateX(-50%); }
+      .flow-card { margin: 0; }
+    }
+
+    /* ── Principle ────────────────────────────────────── */
+    .principle-box {
+      background: #1a3a5c;
+      color: white;
+      border-radius: 12px;
+      padding: 36px 32px;
+    }
+    .principle-box h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+    .principle-box p {
+      color: rgba(255,255,255,0.85);
+      line-height: 1.8;
+      margin-bottom: 12px;
+    }
+    .principle-box .note {
+      font-size: 0.875rem;
+      color: rgba(255,255,255,0.6);
+      border-top: 1px solid rgba(255,255,255,0.15);
+      padding-top: 14px;
+      margin-top: 8px;
+    }
+
+    /* ── Roles ────────────────────────────────────────── */
+    .roles-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    .role-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+    }
+    .role-icon { font-size: 1.8rem; margin-bottom: 10px; }
+    .role-title { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+    .role-desc { font-size: 0.875rem; color: var(--text-muted); line-height: 1.7; }
+    @media (max-width: 560px) { .roles-grid { grid-template-columns: 1fr; } }
+
+    /* ── Contact ──────────────────────────────────────── */
+    .contact-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .contact-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: white;
+      text-decoration: none;
+      color: var(--text);
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .contact-link:hover { border-color: var(--accent); background: #eff6ff; color: var(--accent); }
+
+    /* ── Tech table ──────────────────────────────────── */
+    .tech-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin-top: 20px; }
+    .tech-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+    .tech-table td:first-child { font-weight: 600; color: var(--text-muted); width: 120px; white-space: nowrap; }
+    .tech-table tr:last-child td { border-bottom: none; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <a href="index.html" class="logo" style="text-decoration:none;">
+        <img src="vtaiwan-logo.svg" alt="vTaiwan">
+      </a>
+      <nav class="header-nav">
+        <a href="index.html" data-i18n="back_to_issues">← 所有議題</a>
+        <a href="about.html" style="color:var(--red);" data-i18n="nav_about">關於</a>
+        <span class="nav-divider"></span>
+        <button id="lang-toggle" class="btn btn-ghost btn-sm" onclick="setLang(window.LANG === 'zh' ? 'en' : 'zh')">EN</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <div class="about-hero">
+    <div class="hero-tag" data-i18n="abt_hero_tag">實驗中的公民審議平台</div>
+    <h1 id="hero-title">讓更多人真正理解公共議題<br>而不只是選邊站</h1>
+    <p data-i18n="abt_hero_desc">公共議題的討論，往往只有「已經有立場的人」在參與。沒有立場的人因為資訊門檻太高而沉默，最後變成兩群人各說各話。Civic Talk 想用 AI 打破這個困境。</p>
+    <div class="hero-cta">
+      <a href="index.html" class="btn btn-white" data-i18n="abt_start_btn">瀏覽目前議題</a>
+      <a href="https://github.com/v-taiwan/civic-talk" target="_blank" class="btn btn-outline-white" data-i18n="abt_contact_github">查看原始碼</a>
+    </div>
+  </div>
+
+  <!-- How it works -->
+  <div class="about-section">
+    <div class="section-inner">
+      <div class="section-tag">HOW IT WORKS</div>
+      <div class="section-title" data-i18n="abt_how_title">我們怎麼運作？</div>
+      <div class="section-desc" data-i18n="abt_how_desc">整個流程分為三個階段，形成一個持續運轉的循環：</div>
+
+      <div class="flow">
+        <div class="flow-step">
+          <div class="flow-card">
+            <div class="flow-icon">📰</div>
+            <div class="flow-label" data-i18n="abt_step1_label">INFORM</div>
+            <div class="flow-title" data-i18n="abt_step1_title">建立資訊基礎</div>
+            <div class="flow-desc" data-i18n="abt_step1_desc">志願者從各種來源收集素材，用自己的 AI 工具整理出共識、爭點與立場地圖，生成一份給一般人看的一頁式說明。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-card">
+            <div class="flow-icon">💬</div>
+            <div class="flow-label" data-i18n="abt_step2_label">OPINION</div>
+            <div class="flow-title" data-i18n="abt_step2_title">引導個人參與</div>
+            <div class="flow-desc" data-i18n="abt_step2_desc">讀者下載 OPINION.md，貼到自己的 Claude / ChatGPT / Gemini，讓 AI 根據自己的生活情境引導思考，再把整理好的意見摘要回傳平台。</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-card">
+            <div class="flow-icon">🔄</div>
+            <div class="flow-label" data-i18n="abt_step3_label">SYNTHESIS</div>
+            <div class="flow-title" data-i18n="abt_step3_title">匯聚與反饋</div>
+            <div class="flow-desc" data-i18n="abt_step3_desc">累積足夠的個人意見後，再跑一次 AI 彙整，看看有沒有原始素材沒覆蓋到的新觀點，更新說明頁，吸引更多人參與。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Principle -->
+  <div class="about-section">
+    <div class="section-inner">
+      <div class="principle-box">
+        <h3>⚡ <span data-i18n="abt_principle_title">有一件事我們很堅持</span></h3>
+        <p data-i18n="abt_principle_desc">平台本身不呼叫任何 AI API。所有 AI 運算——素材彙整、說明頁生成、再彙整——都由志願者用自己的帳號完成。很多人每週有用不完的 Claude / ChatGPT token，這個平台讓這些閒置算力變成公共資源。</p>
+        <p class="note" data-i18n="abt_principle_note">這個設計也讓任何人都可以自己部署一份 Civic Talk，完全不需要負擔 AI API 費用。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Join / Roles -->
+  <div class="about-section">
+    <div class="section-inner">
+      <div class="section-tag">GET INVOLVED</div>
+      <div class="section-title" data-i18n="abt_join_title">你可以怎麼參與？</div>
+      <div class="roles-grid" id="roles-grid">
+        <!-- rendered by JS for i18n support -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact -->
+  <div class="about-section">
+    <div class="section-inner">
+      <div class="section-tag">CONTACT</div>
+      <div class="section-title" data-i18n="abt_contact_title">聯繫與加入</div>
+      <p class="section-desc" style="margin-bottom:0;" data-i18n="abt_contact_desc">對這個專案有想法、問題，或想一起做點什麼，歡迎來找我們：</p>
+      <div class="contact-links">
+        <a href="https://join.g0v.tw" target="_blank" class="contact-link">
+          🌐 <span data-i18n="abt_contact_join">加入 g0v Slack</span>
+        </a>
+        <a href="#" class="contact-link" onclick="return false;">
+          💬 <span data-i18n="abt_contact_slack">g0v Slack 找 Peter</span>
+          <span style="color:var(--text-muted);font-size:0.8rem;">@g0v slack</span>
+        </a>
+        <a href="#" class="contact-link" onclick="return false;">
+          📢 <span data-i18n="abt_contact_channel">#vTaiwan 頻道</span>
+        </a>
+        <a href="mailto:vtaiwan.tw@gmail.com" class="contact-link">
+          ✉️ vtaiwan.tw@gmail.com
+        </a>
+        <a href="https://github.com/v-taiwan/civic-talk" target="_blank" class="contact-link">
+          🐙 <span data-i18n="abt_contact_github">查看原始碼</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tech Stack -->
+  <div class="about-section">
+    <div class="section-inner">
+      <div class="section-tag">TECH</div>
+      <div class="section-title" data-i18n="abt_tech_title">技術架構</div>
+      <div style="background:white;border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+        <table class="tech-table">
+          <tr><td>Frontend</td><td data-i18n="abt_tech_frontend">純 HTML / CSS / JS，無框架</td></tr>
+          <tr><td>Backend</td><td data-i18n="abt_tech_backend">Cloudflare Pages Functions</td></tr>
+          <tr><td>Database</td><td data-i18n="abt_tech_db">Cloudflare D1（SQLite）</td></tr>
+          <tr><td>Deploy</td><td data-i18n="abt_tech_deploy">Cloudflare Pages + GitHub 自動部署</td></tr>
+          <tr><td>Auth</td><td data-i18n="abt_tech_auth">Cloudflare Access（Google 帳號）</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <img src="vtaiwan-logo.svg" alt="vTaiwan">
+      </div>
+      <p class="footer-desc">公共政策的開放審議平台，讓每個人都能參與台灣的未來。</p>
+      <div class="footer-hairline"></div>
+      <div class="footer-copy">&copy; 2026 vTaiwan · CC-BY-SA 4.0</div>
+      <div class="footer-links">
+        <a href="https://www.vtaiwan.tw" target="_blank" rel="noopener noreferrer">vtaiwan.tw</a>
+        <a href="https://make.vtaiwan.tw" target="_blank" rel="noopener noreferrer">make.vtaiwan.tw</a>
+        <a href="index.html" data-i18n="back_to_issues">所有議題</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function renderRoles() {
+      const roles = [
+        { icon: t('abt_role1_icon'), title: t('abt_role1_title'), desc: t('abt_role1_desc') },
+        { icon: t('abt_role2_icon'), title: t('abt_role2_title'), desc: t('abt_role2_desc') },
+        { icon: t('abt_role3_icon'), title: t('abt_role3_title'), desc: t('abt_role3_desc') },
+        { icon: t('abt_role4_icon'), title: t('abt_role4_title'), desc: t('abt_role4_desc') },
+      ];
+      document.getElementById('roles-grid').innerHTML = roles.map(r => `
+        <div class="role-card">
+          <div class="role-icon">${r.icon}</div>
+          <div class="role-title">${r.title}</div>
+          <div class="role-desc">${r.desc}</div>
+        </div>
+      `).join('');
+    }
+
+    function renderHeroTitle() {
+      const raw = t('abt_hero_title');
+      document.getElementById('hero-title').innerHTML = raw.replace(/\n/g, '<br>');
+    }
+
+    window.rerender = function() {
+      renderRoles();
+      renderHeroTitle();
+    };
+
+    renderRoles();
+    renderHeroTitle();
+  </script>
+</body>
+</html>

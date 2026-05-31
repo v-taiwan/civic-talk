@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Civic Talk｜公共議題審議平台</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@400;700;900&display=swap">
+  <link rel="stylesheet" href="style.css">
+  <script src="i18n.js"></script>
+  <style>
+    body { background: #f5f5f3; }
+    main { padding-top: 36px; }
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--red);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <a href="index.html" class="logo" style="text-decoration:none;">
+        <img src="vtaiwan-logo.svg" alt="vTaiwan">
+      </a>
+      <nav class="header-nav">
+        <a href="index.html" data-i18n="back_to_issues">所有議題</a>
+        <a href="about.html" data-i18n="nav_about">關於</a>
+        <span class="nav-divider"></span>
+        <button id="lang-toggle" class="btn btn-ghost btn-sm" onclick="setLang(window.LANG === 'zh' ? 'en' : 'zh')">EN</button>
+        <a href="#" id="btn-new-issue" class="btn btn-primary btn-sm" data-i18n="idx_new_issue_btn">＋ 新增議題</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <div class="vt-hero">
+    <div class="vt-hero-inner">
+      <div class="hero-tag" data-i18n="site_tagline">公共議題審議平台</div>
+      <h1 class="hero-title" data-i18n="idx_page_title">公共議題討論平台</h1>
+      <p class="hero-desc" data-i18n="idx_page_subtitle">用 AI 降低參與門檻，讓更多人真正了解議題全貌，而不只是選邊站。</p>
+      <div class="hero-btns">
+        <a href="about.html" class="btn btn-outline-white" data-i18n="nav_about">關於專案</a>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <div class="container">
+      <!-- New issue form (hidden by default) -->
+      <div id="new-issue-form" class="card" style="display:none; margin-bottom:24px;">
+        <h2 class="font-bold mb-16" data-i18n="idx_form_title">建立新議題</h2>
+        <div class="form-group">
+          <label>
+            <span data-i18n="idx_label_title">議題標題</span>
+            <span class="label-hint" data-i18n="idx_hint_title">用一句話說清楚</span>
+          </label>
+          <input type="text" id="new-title" data-i18n-placeholder="idx_ph_title" placeholder="例：居住正義與囤房稅改革方向">
+        </div>
+        <div class="form-group">
+          <label>
+            <span data-i18n="idx_label_desc">議題簡介</span>
+            <span class="label-hint" data-i18n="idx_hint_desc">100字以內，說明議題背景</span>
+          </label>
+          <textarea id="new-desc" rows="3" data-i18n-placeholder="idx_ph_desc" placeholder="說明這個議題的來龍去脈，以及為什麼值得關注…"></textarea>
+        </div>
+        <div class="flex gap-8">
+          <button class="btn btn-primary" onclick="createIssue()" data-i18n="idx_submit">建立議題</button>
+          <button class="btn btn-secondary" onclick="toggleNewForm(false)" data-i18n="cancel">取消</button>
+        </div>
+      </div>
+
+      <!-- Section label -->
+      <div style="margin-bottom:16px;">
+        <div class="section-label">ISSUES</div>
+      </div>
+
+      <!-- Issue list -->
+      <div id="issue-list">
+        <div class="empty"><div class="empty-icon">⏳</div><span data-i18n="loading">載入中…</span></div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <img src="vtaiwan-logo.svg" alt="vTaiwan">
+      </div>
+      <p class="footer-desc">公共政策的開放審議平台，讓每個人都能參與台灣的未來。<br>樣稿開發中，參考 vTaiwan 審議民主專案。</p>
+      <div class="footer-hairline"></div>
+      <div class="footer-copy">&copy; 2026 vTaiwan · CC-BY-SA 4.0</div>
+      <div class="footer-links">
+        <a href="https://www.vtaiwan.tw" target="_blank" rel="noopener noreferrer">vtaiwan.tw</a>
+        <a href="https://make.vtaiwan.tw" target="_blank" rel="noopener noreferrer">make.vtaiwan.tw</a>
+        <a href="about.html" data-i18n="nav_about">關於</a>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast"></div>
+  <script>
+    const API = '/api';
+    let issuesCache = [];
+
+    async function loadIssues() {
+      const res = await fetch(`${API}/issues`);
+      issuesCache = await res.json();
+      renderIssues();
+    }
+
+    function renderIssues() {
+      const el = document.getElementById('issue-list');
+      if (!issuesCache.length) {
+        el.innerHTML = `<div class="empty"><div class="empty-icon">📭</div>${t('idx_empty')}</div>`;
+        return;
+      }
+      el.innerHTML = issuesCache.map(issue => `
+        <a href="issue.html?id=${issue.id}" class="card issue-card">
+          <div class="issue-title">${esc(issue.title)}</div>
+          <p class="text-muted text-sm mt-4" style="margin-bottom:12px;">${esc(issue.description || '')}</p>
+          <div class="issue-meta">
+            <span class="status-badge status-${issue.status}">${statusLabel(issue.status)}</span>
+            <span>📄 ${issue.material_count} ${t('idx_materials_unit')}</span>
+            <span>${formatDate(issue.created_at)}</span>
+          </div>
+        </a>
+      `).join('');
+    }
+
+    function statusLabel(s) {
+      const map = { collecting: t('status_collecting'), summarizing: t('status_summarizing'), published: t('status_published') };
+      return map[s] || s;
+    }
+
+    function toggleNewForm(show) {
+      document.getElementById('new-issue-form').style.display = show ? 'block' : 'none';
+    }
+
+    async function createIssue() {
+      const title = document.getElementById('new-title').value.trim();
+      const description = document.getElementById('new-desc').value.trim();
+      if (!title) { showToast(t('idx_toast_title_required')); return; }
+      const res = await fetch(`${API}/issues`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, description })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        showToast(t('idx_toast_create_ok'));
+        toggleNewForm(false);
+        setTimeout(() => location.href = `issue.html?id=${data.id}`, 800);
+      } else {
+        showToast(t('idx_toast_create_fail'));
+      }
+    }
+
+    document.getElementById('btn-new-issue').onclick = (e) => {
+      e.preventDefault();
+      toggleNewForm(true);
+      document.getElementById('new-title').focus();
+    };
+
+    window.rerender = function() { renderIssues(); };
+
+    function esc(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+    function formatDate(d) {
+      return d ? new Date(d).toLocaleDateString(window.LANG === 'zh' ? 'zh-TW' : 'en-US') : '';
+    }
+    function showToast(msg) {
+      const t2 = document.getElementById('toast');
+      t2.textContent = msg; t2.classList.add('show');
+      setTimeout(() => t2.classList.remove('show'), 2500);
+    }
+
+    loadIssues();
+  </script>
+</body>
+</html>
