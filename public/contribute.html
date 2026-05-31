@@ -24,8 +24,8 @@
       <p class="page-subtitle" id="issue-title-hint">載入中…</p>
 
       <div class="alert alert-info" style="margin-bottom:28px;">
-        <strong>提交原則：</strong> 請直接複製貼上網頁原文，不要改寫或摘要。
-        立場鮮明、甚至可信度有爭議的來源都歡迎提交——多元聲音本身就是議題現況的一部分。
+        <strong>提交原則：</strong> 請先查明來源授權或使用條款，再自行選擇貼上全文、合理引用片段，或提交摘要。
+        若不確定是否可全文轉載，建議改貼摘要（可請 AI 協助整理）並附上來源連結，以降低侵權風險。
       </div>
 
       <div class="card">
@@ -35,7 +35,7 @@
         </div>
 
         <div class="form-group">
-          <label>來源連結 <span class="label-hint">可選填</span></label>
+          <label>來源連結 <span class="label-hint">建議填寫，方便查證授權與脈絡</span></label>
           <input type="url" id="source-url" placeholder="https://…">
         </div>
 
@@ -50,11 +50,18 @@
         </div>
 
         <div class="form-group">
-          <label>素材內容 <span class="label-hint">請直接貼上原文，不要改寫</span></label>
-          <textarea id="content" rows="12" placeholder="複製貼上原始文字…
+          <label>素材內容或摘要 <span class="label-hint">請確認授權後再貼全文；不確定時請改貼摘要</span></label>
+          <textarea id="content" rows="12" placeholder="可貼上已確認授權可轉載的全文、合理引用片段，或自行整理的摘要…
 
-提示：整段複製，包含可能「偏頗」的部分。平台展示各種聲音，不做可信度過濾。"></textarea>
+提示：若來源授權不明，請不要整篇複製。你可以先請 AI 摘要重點，再附上來源連結供查證。"></textarea>
           <p class="text-sm text-muted mt-4" id="char-count">0 字</p>
+        </div>
+
+        <div class="form-group">
+          <label style="display:flex; gap:8px; align-items:flex-start; font-weight:400;">
+            <input type="checkbox" id="license-confirm" style="margin-top:4px;">
+            <span>我已確認此內容的授權、使用條款或合理引用範圍；若授權不明，我提交的是摘要而非未經授權的全文。</span>
+          </label>
         </div>
 
         <div class="flex gap-8">
@@ -67,11 +74,11 @@
         <h3 class="font-medium mb-8">🙋 什麼素材最有用？</h3>
         <p class="text-sm text-muted" style="line-height:1.8;">
           • <strong>政府文件</strong>：官方說明、政策報告、立法院公報<br>
-          • <strong>NGO 聲明</strong>：環保團體、社運組織、公民社會的立場稿<br>
-          • <strong>新聞報導</strong>：各家媒體的報導（包含立場明顯的媒體）<br>
-          • <strong>社群貼文</strong>：具代表性的臉書發文、論壇討論（注意版權）<br>
-          • <strong>學術研究</strong>：研究結論與摘要<br><br>
-          <em>同一份素材請多人各自貼一次，平台會自動計算一致性。</em>
+          • <strong>NGO 聲明</strong>：環保團體、社運組織、公民社會的立場稿（請確認是否允許轉載）<br>
+          • <strong>新聞報導</strong>：各家媒體的報導重點、短引文與來源連結<br>
+          • <strong>社群貼文</strong>：具代表性的貼文或討論摘要（請留意版權與平台規範）<br>
+          • <strong>學術研究</strong>：研究結論、摘要與引用資訊<br><br>
+          <em>同一份素材可由多人各自整理提交，平台會自動計算一致性。</em>
         </p>
       </div>
     </div>
@@ -102,8 +109,10 @@
 
     async function submitMaterial() {
       const content = document.getElementById('content').value.trim();
+      const licenseConfirmed = document.getElementById('license-confirm').checked;
       if (!content) { showToast('請填入素材內容'); return; }
-      if (content.length < 30) { showToast('素材太短了，請貼上更完整的原文'); return; }
+      if (content.length < 30) { showToast('素材太短了，請補充更完整的內容或摘要'); return; }
+      if (!licenseConfirmed) { showToast('請先確認授權或改提交摘要'); return; }
 
       const body = {
         source_name: document.getElementById('source-name').value.trim(),
